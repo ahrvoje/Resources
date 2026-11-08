@@ -8,9 +8,12 @@ Existing files are never overwritten.
 import argparse
 import json
 import shutil
+import sys
 from pathlib import Path
 
 SKILL = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(SKILL / "scripts"))
+from common import default_gpu_mutex
 
 
 def main():
@@ -27,7 +30,10 @@ def main():
             "source": src.as_posix(), "title": a.title,
             "style": "design/book-style.sty", "contract": "design/contract.md",
             "local_model": {"url": "http://127.0.0.1:8081/v1", "eur_per_hour": 0.10},
-            "usd_per_eur": 1.08, "baseline_usd_per_page": 0.05}, indent=1), encoding="utf-8")
+            "usd_per_eur": 1.08, "baseline_usd_per_page": 0.05,
+            # GPU lease shared with other local GPU apps: set it to the name they use
+            "gpu_mutex": default_gpu_mutex()},
+            indent=1), encoding="utf-8")
     for d in ("design", "pages", "figs", "work", "output"):
         (root / d).mkdir(exist_ok=True)
     for s, t in (("assets/style-template.sty", "design/book-style.sty"),

@@ -28,9 +28,11 @@ the elements they name, on the same side, nothing between label and element.
 ## Cost measuring (do it while working, not at the end)
 Baseline: **$0.05 per page**, all-in except one-time setup. It is hard; work towards it.
 - Every OpenRouter call goes through `scripts/worker.py` with `--page pNNN --role ROLE` (no page =
-  one-time work). Every Pi run goes through `scripts/pi_transcribe.py`. Both log to `work/`.
-- Run `py scripts/costs.py` after every page or batch. It prints cost per page (OpenRouter + Pi
-  electricity) against the baseline, by role and by model, and lists failed or wasted calls.
+  one-time work). Every local-model run goes through `scripts/transcribe_local.py` (direct or
+  Pi) or `scripts/mini_task.py` (mini-swe-agent). All log to `work/`.
+- Run `py scripts/costs.py` after every page or batch. It prints cost per page (OpenRouter +
+  local electricity) against the baseline, by role, by model and by local route, and lists
+  failed, wasted, stalled or restored runs.
 - Record the orchestrator's own cost with `py scripts/costs.py --orchestrator USD --note TEXT`
   (from `/cost` or the account console) at each milestone. Mark estimates as estimates.
 - When a page goes over the baseline, find the role that caused it before the next page.
@@ -38,7 +40,8 @@ Baseline: **$0.05 per page**, all-in except one-time setup. It is hard; work tow
 ## Budget per page that met the target (first project, steady state)
 | step | worker | cost |
 |---|---|---|
-| transcription + about 2 fixes | local Pi | about EUR 0.002 |
+| transcription + about 2 fixes | local model, direct call (Pi in the first project) | about EUR 0.002 |
+| build-error loops when needed | local mini-swe-agent | about EUR 0.001–0.003 per run |
 | 2 reviews | gemini-4-argon | about $0.034 |
 | labels | gemini-4-argon | about $0.006 per figure |
 | occasional precise fix | gpt-6.1-terra | about $0.01 when needed |

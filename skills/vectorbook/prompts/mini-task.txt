@@ -1,0 +1,19 @@
+You work in one page folder of a book re-setting project. The page is a LaTeX body (body.tex) of a
+modern re-setting of a scanned book page; figK.tex files are traced figures.
+
+TASK
+{TASK}
+
+RULES
+- You may change only these files: {EDIT}. Do not create, delete or change other files except
+  build outputs.
+- Never change words or mathematics of the content; never add content. Change only what the task
+  asks.
+- Edit files with a small Python script that reads the file, does exact string replacement and
+  writes it back. LaTeX contains many backslashes: do not edit with sed, echo or shell heredocs.
+  Put LaTeX text in a raw string (r"...") or read it from a file.
+- After each change run the build: {BUILD}
+  Then read checks.json (and page.log when the build failed). Continue until checks.json says
+  "ok": true or the task is done.
+- Keep each command short. Do not read large files in full when a search finds the line.
+- When the task is done, finish as your instructions say.

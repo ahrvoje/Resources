@@ -11,9 +11,12 @@ does not describe installation or configuration.
 | TeX with XeLaTeX | LaTeX packages fontspec, unicode-math, geometry, microtype, xcolor, tikz (libraries arrows.meta, calc, decorations, patterns, shapes, cd), amsmath, mathtools, etoolbox, xparse; LaTeX kernel with filecontents | page builds, figure checks, final book |
 | OpenType fonts | Libertinus Serif and Libertinus Math (or the fonts the project style names) | typesetting |
 | Remote models | OpenRouter account, API key, internet access | review, label reading, precise fixes, code, design |
-| Local model | an OpenAI-compatible server with a vision-capable model that reads a half page (first project: Strata serving Qwen3.8-Flash-Next Q2_0) | cheap transcription and fixes |
-| Local agent CLI | Pi coding agent (needs a Node.js runtime) connected to that server | runs the local model in non-interactive mode |
-| GPU monitoring | a command that reports GPU utilisation (nvidia-smi for NVIDIA) | Pi watchdog |
+| Local model | an OpenAI-compatible server with a vision-capable model that reads a half page (first project: Qwen3.8-Flash-Next Q2_0) | cheap transcription and fixes |
+| Local model, direct | the same server, reached by HTTP from the scripts | single-shot transcription and fixes |
+| Local agent CLI | Pi coding agent (needs a Node.js runtime) connected to that server | exact in-place edits, image-attached agent tasks |
+| Local agent loop | mini-swe-agent (Python package with LiteLLM, in its own environment, e.g. a uv tool), connected to that server | iterative tool loops: build, read log, fix, rebuild |
+| GPU monitoring | a command that reports GPU utilisation (nvidia-smi for NVIDIA) | watchdog for all local routes |
+| GPU sharing | a named mutex (Windows) or lock file (other systems) that every local GPU app on the machine honours; name in `gpu_mutex` | one GPU owner at a time |
 
 ## Source formats
 - DjVu: DjVuLibre command-line tools ddjvu, djvused, djvutxt (Windows binaries are bundled in
@@ -27,8 +30,14 @@ does not describe installation or configuration.
 
 ## Operating-system specific points in the scripts
 - The Python launcher is `py` on Windows; use `python3` elsewhere.
-- `pi_transcribe.py` starts Pi through the shell (Windows needs it for `pi.cmd`) and stops a
-  stalled run with `taskkill /T /F`; on Linux or macOS use a process group and kill the group.
+- `transcribe_local.py --via pi` starts Pi through the shell (Windows needs it for `pi.cmd`).
+  Stalled runs are stopped by `common.kill_tree` (`taskkill /T /F` on Windows, the process group
+  elsewhere).
+- `mini_task.py` finds the mini-swe-agent interpreter through `uv tool dir`; set `mini_python` in
+  vectorbook.json when it is installed another way. The interactive `mini` UI needs a real
+  console; the skill uses the Python API instead.
+- The agent's shell differs by OS (cmd.exe on Windows, a POSIX shell elsewhere); the task prompt
+  tells the model which one.
 - The watchdog reads GPU load with nvidia-smi; for other GPUs replace `gpu_busy()`. Without a
   GPU query the watchdog cannot detect a stall and only the hard time limit applies.
 - Paths inside scripts use pathlib; no drive letters are assumed.

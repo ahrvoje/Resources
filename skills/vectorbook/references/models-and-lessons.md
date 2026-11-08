@@ -8,7 +8,8 @@ mathematics monograph). Prices are $ per million input/output tokens at that tim
 
 | Worker | Good at | Cost seen |
 |---|---|---|
-| Local Pi + Qwen3.8-Flash-Next Q2 (Strata) | Page transcription from two half-page images plus OCR hint: words and mathematics nearly exact, about 50 s per page. Simple targeted body fixes (remove blank lines, add `\mcont`, change one line). | EUR 0.10 per hour, about EUR 0.002 per page |
+| Local Qwen3.8-Flash-Next Q2 (local server), any route | Page transcription from two half-page images plus OCR hint: words and mathematics nearly exact (direct call 31 s, Pi about 50 s per page). Simple targeted body fixes (remove blank lines, add `\mcont`, change one line). | EUR 0.10 per hour, about EUR 0.002 per page |
+| Same model in mini-swe-agent (text-based actions) | Iterative repair: fixed a TeX build error (`$\qedmark$` in math mode) with a correct 3-line change in 43–116 s, verified by rebuild. | about EUR 0.001–0.003 per run |
 | google/gemini-4-argon ($2/$10) | Page review (source vs render): found every known defect on the calibration page, including lost italics, wrong indents after displays, inline-vs-display changes. Label reading on numbered-mark images. | Review about $0.017 per page; labels about $0.006 per figure |
 | openai/gpt-6.1-sol ($2/$10) | Long, complete code files from a precise specification (780-line tracer, $0.105). Design decisions from measured data (style file and page size, $0.04). | |
 | openai/gpt-6.1-terra ($1/$5) | Precise body edits that Pi cannot do: counting cells in a 31-column table, "replace everywhere", contract notation. Writing skill text from a facts list. | About $0.01–0.02 per call |
@@ -23,6 +24,14 @@ mathematics monograph). Prices are $ per million input/output tokens at that tim
 | anthropic/claude-haiku-5.5 ($0.10/$0.50) | Review: found about half of the defects. | $0.003 | Acceptable only as a pre-filter. |
 | Local Pi | Counting tasks (31-column staggered table): wrong twice. "Replace every X" edits: not applied. Rejected a contract notation change as "not in the source". With thinking off, wrote analysis and stopped before the requested body. | 3 wasted runs plus orchestrator turns | Send counting, global replacement and contract-notation fixes to gpt-6.1-terra. Make prompts start the reply with the output section. |
 | Any model drawing figures | Cannot follow irregular hand-drawn curves (earlier projects: several paid Opus revisions per figure, still wrong shapes). Added content to a page ("(see Figure 1)"). | $0.07–0.10 per call, many rounds | Trace figures (references/figures.md). Never let a model draw an irregular figure. |
+
+## Harness lessons (local model)
+- Most local work in the first project was single-shot; it needed no agent. A direct HTTP call
+  is the most reliable route for it: Pi's hang came from the CLI wrapper, not from the model.
+- Use an agent only for iterative tool loops. For weak local models prefer a harness that needs
+  no function calling (mini-swe-agent, text-based). Use Pi when edits must be exact in place.
+- The harness matters less than the model and the task shape: test a new local model or
+  harness on a few real tasks with known answers before relying on it.
 
 ## Orchestrator lessons
 

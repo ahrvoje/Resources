@@ -2,9 +2,9 @@
 
 Usage: py costs.py                     summary (run it after every page or batch)
        py costs.py --orchestrator USD --note TEXT   record orchestrator cost (e.g. from /cost)
-Sources: work/costs.jsonl (OpenRouter, from worker.py), work/pi-runs.jsonl (local Pi, from
-pi_transcribe.py), work/orchestrator.jsonl (manual). A record with a page tag is per-page
-work; without it, one-time work (code, design, calibration).
+Sources: work/costs.jsonl (OpenRouter, from worker.py), work/local-runs.jsonl (local model:
+direct calls, Pi, mini-swe-agent; wall time -> electricity), work/orchestrator.jsonl (manual).
+A record with a page tag is per-page work; without it, one-time work (code, design, calibration).
 """
 import argparse
 import collections
@@ -32,7 +32,9 @@ def main():
             f.write(json.dumps({"usd": a.orchestrator, "note": a.note, "time": time.time()}) + "\n")
     cfg = config()
     rate, eur_h = cfg["usd_per_eur"], cfg["local_model"]["eur_per_hour"]
-    calls, pis, orch = load("costs.jsonl"), load("pi-runs.jsonl"), load("orchestrator.jsonl")
+    calls, orch = load("costs.jsonl"), load("orchestrator.jsonl")
+    pis = [{**r, "page_dir": r.get("page") or r.get("page_dir", "-"), "route": r.get("route", "pi")}
+           for r in load("local-runs.jsonl") + load("pi-runs.jsonl")]
     per_page, one_time = collections.defaultdict(float), 0.0
     roles, models = collections.defaultdict(float), collections.defaultdict(float)
     for r in calls:
@@ -64,7 +66,13 @@ def main():
     print("by model:", {k: round(v, 4) for k, v in sorted(models.items(), key=lambda kv: -kv[1])})
     bad = [(r["name"], r.get("cost"), r.get("warning") or r.get("error", "")[:60]) for r in calls
            if not r.get("ok") or r.get("warning")]
-    stalls = [(r["page_dir"], r["tag"], r.get("status")) for r in pis if r.get("status") not in (None, "ok")]
+    by_route = collections.defaultdict(lambda: [0, 0.0])
+    for r in pis:
+        by_route[r["route"]][0] += 1
+        by_route[r["route"]][1] += r["seconds"]
+    print("local by route (runs, hours):", {k: (v[0], round(v[1] / 3600, 3)) for k, v in by_route.items()})
+    stalls = [(r["page_dir"], r["route"], r.get("tag"), r.get("status")) for r in pis
+              if r.get("status") not in (None, "ok") or r.get("restored")]
     if bad or stalls:
         print("failed or wasted:", bad, stalls)
 
