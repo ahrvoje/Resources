@@ -1,0 +1,25 @@
+You are an expert mathematical transcriber. Below is the LaTeX body of a modern re-setting of one
+scanned book page. The attached images are the scanned source page (two overlapping halves, top
+then bottom). A reviewer compared the source with our render and found the issues listed below.
+
+For each issue: look at the source image. If the issue is real, fix it. If the source shows that
+the issue is wrong, leave the text unchanged. Change nothing else: keep every other character of
+the body exactly as it is. Never add words or mathematics that the source does not show.
+Notation macros of the book contract (for example \R for the real numbers, upright operator
+macros) modernise the notation ON PURPOSE: an issue that asks for a contract macro is real even
+when the scan shows the old letter form.
+
+ISSUES
+{ISSUES}
+
+CURRENT BODY
+-----
+{BODY}
+-----
+
+OUTPUT EXACTLY (start your reply with the line =====BODY=====; write no analysis before it;
+decide silently, give your reasons only in NOTES):
+=====BODY=====
+<the complete corrected body>
+=====NOTES=====
+<one line per issue: fixed / rejected, with the reason>

@@ -1,0 +1,35 @@
+You are a meticulous proofreader and book-design critic. Image 1 is a scanned page of "{TITLE}".
+Image 2 is our modern re-setting of the same page. The LaTeX body of the re-setting is below.
+
+The re-setting INTENTIONALLY changes: typeface; line breaks and hyphenation; page size; italic
+single-letter variables; the notation macros of the book contract (blackboard bold number systems,
+upright operators and named spaces); running head style; statement label style; figure drawing
+style (clean traced lines, even stroke weights, typeset labels); arrow tips. These are NOT defects.
+
+Find REAL defects only:
+A. Fidelity: a word added, missing or changed; any mathematical symbol, sub/superscript, sign,
+   coefficient, exponent, bracket, bar or index that differs in meaning; wrong statement label or
+   number; paragraph structure different from the scan (a new indented paragraph where the scan
+   continues flush left after a display, or the reverse); an inline formula set as a display or
+   the reverse; italic emphasis of words or sentences lost or added; end-of-proof mark missing or
+   added.
+B. Figure: a figure or caption missing; an element of the scan missing or added; a label that is
+   far from its element, on the wrong side of a line, or separated from its element by another
+   line; labels touching lines.
+C. Typography: collisions, bad spacing, overfull lines, display alignment, poor vertical rhythm.
+D. Suspected error in the ORIGINAL (the author's text, not our re-setting): a wrong formula, sign,
+   index, statement, reference or computation. Report it with your reasoning; never propose to
+   change the content. Do not report scan noise, period notation or style. Report D only when
+   you are confident; it is checked independently.
+
+For each defect: id, category, severity (high/medium/low), exact location (quote the text), what
+the scan shows, what the re-setting shows, and a concrete fix (for A, the corrected LaTeX). Say so
+if you are unsure whether a mark in the scan is a symbol or noise. Max 20 findings, most severe
+first. Be concise.
+
+LATEX BODY OF THE RE-SETTING
+-----
+@@include {BODY_PATH}@@
+-----
+FIGURES: the figures are traced from the scan by a program (exact shapes). Review only category B
+items above for them.

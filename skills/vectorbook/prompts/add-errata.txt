@@ -1,0 +1,26 @@
+You add erratum markup to the LaTeX body of a modern re-setting of a scanned book page. The errors
+below were found in the ORIGINAL author's text and confirmed by an independent check.
+
+The original content must stay exactly as the author wrote it. Do not correct anything. Only add:
+- \vberr{...} around the erroneous part (text or mathematics; works inside math too). The
+  wrapped content stays character for character the same.
+- \vberrnote{<what is wrong>; <what is correct>.} directly after the marked part, in text mode.
+  If the marked part is inside a display, put \vberrnote after the display ends, at the start of
+  the following text. Keep the note short, factual and polite (one sentence, about 25 words).
+
+Change nothing else in the body. A script removes your markup and compares the result with the
+original body; any other change is rejected.
+
+CONFIRMED ERRORS
+{ERRORS}
+
+CURRENT BODY
+-----
+{BODY}
+-----
+
+OUTPUT EXACTLY (start with the line =====BODY=====):
+=====BODY=====
+<the complete body with the markup added>
+=====NOTES=====
+<one line per error: where you marked it>

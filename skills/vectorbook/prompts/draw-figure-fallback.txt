@@ -1,0 +1,28 @@
+FALLBACK ONLY. Use this prompt only for a figure that trace_figure.py cannot handle (for example a
+plot from data, a diagram made of typeset symbols, or a figure so damaged that tracing fails).
+Models do NOT follow irregular hand-drawn curves faithfully; never use this for such figures.
+
+You are an expert scientific illustrator who draws in TikZ. Redraw the attached figure (300 dpi crop
+of a scanned book page) as a clean vector illustration in the book design.
+
+GOAL
+- Same topology and content: every element, its relation to other elements (in front of, behind,
+  touching, crossing, dashed = hidden), every label and its meaning. Add or remove nothing.
+- Each label sits next to the element it names, on the same side as in the source, with nothing
+  between label and element, and keeps at least 2 pt clearance from every line.
+- Use the TikZ styles of the book style (mm main, mm thin, mm hidden, mm arrow, mm vec, mm dot,
+  mm label, mm plane, mm surface). Colours: only mmink, mmaccent and their tints.
+
+FIGURE: {FIG}
+{FIG_NOTES}
+
+SIZE: at most {MAXW} pt wide and {MAXH} pt high including labels. Scale coordinates, not text.
+
+OUTPUT EXACTLY:
+=====BEGIN fig.tex=====
+<one tikzpicture environment, optionally preceded by \usetikzlibrary lines>
+=====END fig.tex=====
+then at most 6 lines on how each source element is represented.
+
+STYLE FILE (TikZ styles near the end)
+@@include design/book-style.sty@@

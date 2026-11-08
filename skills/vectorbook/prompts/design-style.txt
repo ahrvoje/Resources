@@ -1,0 +1,31 @@
+You are the book designer of a modern re-setting of "{TITLE}". The style file below defines the
+design. Each source page becomes exactly one new page with the same folio, so a page must hold the
+densest source page.
+
+DECIDE THE PAGE SIZE (and any other change asked below) and return the complete style file.
+The owner prefers a format smaller than standard, balanced and elegant, at the smaller side of
+the choice when the data allow it.
+
+DATA (measured, not estimated)
+{DATA}
+
+ALSO FIX
+{FIXES}
+
+RULES
+- Keep every macro, environment, TikZ style name and notation command of the contract unchanged
+  in name and meaning (pages already use them). Keep the fonts unless the data justify a change.
+- You may adjust page size, measure, text height (whole number of lines), margins, head position,
+  type size and leading only if the data justify it, display skips and caption spacing.
+- Do not stretch pages to fill them; fill of about 70-90 % is normal after modernisation.
+- The design is decided by you now. Do not deliberate at length.
+
+OUTPUT EXACTLY:
+=====BEGIN book-style.sty=====
+<the complete file>
+=====END book-style.sty=====
+=====RATIONALE=====
+<at most 10 lines: trim (in and mm), measure, lines, margins, why; each fix>
+
+CURRENT STYLE FILE
+@@include design/book-style.sty@@

@@ -1,0 +1,49 @@
+You are an expert mathematical transcriber and LaTeX typesetter. Transcribe ONE scanned page of
+"{TITLE}" into LaTeX body markup for a modern re-setting. The attached images are the page as two
+overlapping halves (top, then bottom); lines in the overlap appear twice; transcribe them once.
+The page is compiled with the book style whose markup CONTRACT is below. Use ONLY the contract
+macros and environments plus standard amsmath/mathtools/unicode-math. Fidelity of words and
+mathematics is the top priority.
+
+PAGE: source page {PAGE}, printed page {PRINTED}.
+{PAGE_NOTES}
+
+RULES
+1. Words: every word exactly, in order, with spelling of names, punctuation, quotation marks
+   (``...''), citations and cross references. Remove only end-of-line hyphenation that splits a word
+   because of the old line break; keep real hyphens. Do NOT reproduce the source line breaks.
+   Never add, complete, correct or reword text. If the page starts inside a paragraph from the
+   previous page, start with the contract's continuation command; if it ends mid-sentence, end there.
+2. Paragraphs: a blank line only where the source starts a new (indented) paragraph. After a
+   display, do NOT leave a blank line unless the source starts a new indented paragraph there:
+   text that continues the sentence after a display follows on the next line.
+3. Mathematics: same symbols, structure and meaning, in modern convention and with the contract's
+   notation macros (they modernise notation on purpose: use them even where the source looks
+   different, e.g. bold R -> \R). Keep inline formulas inline and displays displayed, exactly as
+   the source sets them. Keep punctuation that follows a display inside the display.
+4. Emphasis: italic words and sentences inside upright text (defined terms, emphasised
+   statements) are \emph{...}. Statement environments set their own italic body.
+5. Statements, proofs, end-of-proof marks, captions: use the contract environments exactly.
+6. Figures: replace each drawing by the contract figure command with \input{figK} (K = 1, 2, ...
+   in reading order) and the caption label as printed (empty if the source has none). Never draw.
+   Commutative diagrams of typeset symbols and arrows are NOT drawings: typeset them (tikzcd).
+7. No manual spacing or font commands except inside math alignments, \emph and \textup.
+8. Scanner noise (specks, stray pen lines through text) is not content: ignore it.
+9. The OCR text below is UNRELIABLE (wrong symbols, lost sub/superscripts); the image is the
+   authority. Use the OCR only to help read words.
+
+CONTRACT
+{CONTRACT}
+
+OCR TEXT (unreliable hint)
+-----
+{OCR}
+-----
+
+OUTPUT EXACTLY (start with the line =====META=====, no analysis before it):
+=====META=====
+{"printed_page": <int>, "head_text": "<running head in normal case as printed on this page>"}
+=====BODY=====
+<LaTeX body>
+=====NOTES=====
+<at most 8 lines: uncertain readings and your decision>

@@ -1,0 +1,271 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{book-style}[2026/11/08 v1.1 vectorbook template: modern re-setting of a scanned book]
+% Template. init_project.py copies it to design/book-style.sty; edit only that project copy.
+% Starting point: 5.5 x 8.5 in, 25 pc, Libertinus 10.5/13 (decided for a 6 x 9 in typewriter-set
+% monograph; decide the trim per book with the page-size experiment in references/design-and-layout.md).
+
+% ---------------------------------------------------------------- packages
+\RequirePackage{etoolbox}
+\RequirePackage{xparse}
+\RequirePackage[twoside,
+  paperwidth=5.5in, paperheight=8.5in,
+  textwidth=25pc, inner=42.6pt,
+  textheight=478.5pt, top=68.1pt,
+  headheight=12pt, headsep=16pt, footskip=24pt,
+  marginparwidth=0pt, marginparsep=0pt]{geometry}
+\RequirePackage{amsmath}
+\RequirePackage{mathtools}
+\RequirePackage{fontspec}
+\RequirePackage[math-style=TeX,bold-style=TeX]{unicode-math}
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,decorations.pathmorphing,patterns,shapes,cd}
+\RequirePackage[protrusion=true,expansion=false,final]{microtype}
+
+% ---------------------------------------------------------------- colours
+\definecolor{mmink}{gray}{0.10}
+\definecolor{mmaccent}{HTML}{8A2D1F}
+
+% ---------------------------------------------------------------- fonts
+\setmainfont{LibertinusSerif}[
+  Extension      = .otf,
+  UprightFont    = *-Regular,
+  ItalicFont     = *-Italic,
+  BoldFont       = *-Bold,
+  BoldItalicFont = *-BoldItalic,
+  Ligatures      = TeX,
+  Numbers        = Lining]
+
+\setmathfont{LibertinusMath-Regular}[Extension=.otf]
+
+% running heads: lowercase small caps, letter-spaced, old-style figures
+\newfontfamily\mm@headfont{LibertinusSerif-Regular}[
+  Extension   = .otf,
+  ItalicFont  = LibertinusSerif-Italic,
+  BoldFont    = LibertinusSerif-Bold,
+  Ligatures   = TeX,
+  Letters     = SmallCaps,
+  LetterSpace = 8,
+  Numbers     = OldStyle]
+% statement labels: caps + small caps, lightly spaced, lining figures
+\newfontfamily\mm@labelfont{LibertinusSerif-Regular}[
+  Extension   = .otf,
+  ItalicFont  = LibertinusSerif-Italic,
+  BoldFont    = LibertinusSerif-Bold,
+  Ligatures   = TeX,
+  Letters     = SmallCaps,
+  LetterSpace = 4,
+  Numbers     = Lining]
+% captions and section titles: caps + small caps, more open
+\newfontfamily\mm@capfont{LibertinusSerif-Regular}[
+  Extension   = .otf,
+  ItalicFont  = LibertinusSerif-Italic,
+  BoldFont    = LibertinusSerif-Bold,
+  Ligatures   = TeX,
+  Letters     = SmallCaps,
+  LetterSpace = 7,
+  Numbers     = Lining]
+% folio: old-style figures
+\newfontfamily\mm@foliofont{LibertinusSerif-Regular}[
+  Extension   = .otf,
+  ItalicFont  = LibertinusSerif-Italic,
+  BoldFont    = LibertinusSerif-Bold,
+  Ligatures   = TeX,
+  Numbers     = OldStyle]
+
+% ---------------------------------------------------------------- sizes
+\renewcommand\normalsize{%
+  \@setfontsize\normalsize{10.5}{13}%
+  \abovedisplayskip 8pt \@plus 3pt \@minus 3pt
+  \belowdisplayskip \abovedisplayskip
+  \abovedisplayshortskip 3pt \@plus 2pt
+  \belowdisplayshortskip 6pt \@plus 3pt \@minus 2pt
+  \let\@listi\@listI}
+\renewcommand\small{%
+  \@setfontsize\small{9.25}{11.5}%
+  \abovedisplayskip 6pt \@plus 2pt \@minus 2pt
+  \belowdisplayskip \abovedisplayskip
+  \abovedisplayshortskip 2pt \@plus 2pt
+  \belowdisplayshortskip 4pt \@plus 2pt \@minus 2pt}
+\normalsize
+\setlength\topskip{10.5pt}
+\setlength\parindent{1.5em}
+\setlength\parskip{0pt}
+\setlength\jot{4pt}
+\frenchspacing
+\setlength\emergencystretch{2em}
+\pretolerance=150
+\tolerance=1000
+
+% ---------------------------------------------------------------- vertical layout
+% Every page is flush-bottom and ends with \vbendpage{<bottom stretch>} (written by the scripts):
+%   {fill}  ragged page: the free space stays at the bottom (short pages, as in the source);
+%   {<dim>} balanced page: the free space is shared by the stretchable gaps of the page (display,
+%           figure and statement skips; text lines keep the grid) and a finite bottom reserve <dim>.
+% vertical.py computes <dim> with one rule for all pages. The log line VBPAGE gives the natural
+% content height and the total finite stretch of the page.
+\flushbottom
+\def\vb@fill{fill}
+\newcommand\vbendpage[1]{%
+  \par
+  \typeout{VBPAGE:\the\c@page:\the\pagetotal:\the\pagestretch:\the\pagegoal}%
+  \def\vb@arg{#1}%
+  \ifx\vb@arg\vb@fill \vskip 0pt plus 1fill\relax \else \vskip 0pt plus #1\relax \fi
+  \newpage}
+
+% ---------------------------------------------------------------- errata (additions, not content)
+% The original text stays exactly as the author wrote it. A verified logical or technical error
+% is marked in red, and a small red note says what is wrong and what is correct.
+%   \vberr{<original text or math, unchanged>}   red marking; works in text and math
+%   \vberrnote{<what is wrong; what is correct>}  red note mark e1, e2 ... and a red footnote;
+%                                                text mode only (after a display, not inside it)
+\definecolor{mmerr}{HTML}{B3261E}
+\newcounter{vberr}
+\newcommand\vberr[1]{\textcolor{mmerr}{#1}}
+\newcommand\vberrnote[1]{%
+  \stepcounter{vberr}%
+  \begingroup
+    \protected@edef\@thefnmark{e\arabic{vberr}}%
+    \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\color{mmerr}\@thefnmark}}}%
+    \@makefnmark
+    \@footnotetext{\color{mmerr}\fontsize{8}{10}\selectfont\ignorespaces #1}%
+  \endgroup}
+
+% ---------------------------------------------------------------- running heads
+\newcommand\mm@headtext{}
+\newlength\mm@foliogap
+\setlength\mm@foliogap{14pt}
+
+% \vbhead{<printed page number>}{<head text>}: first line of every page (written by build_page.py)
+\newcommand\vbhead[2]{%
+  \setcounter{page}{#1}%
+  \setcounter{footnote}{0}\setcounter{vberr}{0}%
+  \gdef\mm@headtext{#2}}
+
+\newcommand\mm@headstyle{%
+  {\fontsize{9}{12}\selectfont\mm@headfont\color{mmink}%
+   \MakeLowercase{\mm@headtext}}}
+\newcommand\mm@folio{%
+  {\fontsize{10.5}{12}\selectfont\mm@foliofont\color{mmaccent}\thepage}}
+
+\def\ps@vectorbook{%
+  \let\@mkboth\@gobbletwo
+  \def\@evenhead{\normalfont\llap{\mm@folio\hskip\mm@foliogap}\mm@headstyle\hfil}%
+  \def\@oddhead{\normalfont\hfil\mm@headstyle\rlap{\hskip\mm@foliogap\mm@folio}}%
+  \let\@evenfoot\@empty
+  \let\@oddfoot\@empty}
+\let\ps@plain\ps@vectorbook
+\pagestyle{vectorbook}
+
+% ---------------------------------------------------------------- statements
+\newlength\mm@stmtskip
+\setlength\mm@stmtskip{6pt plus 2pt minus 1pt}
+
+\newcommand\mm@label[2]{%
+  {\upshape\mm@labelfont #1\ifblank{#2}{}{ #2}.}\enspace}
+
+\NewDocumentEnvironment{mstatement}{m m}
+  {\par\addvspace{\mm@stmtskip}\indent\mm@label{#1}{#2}\itshape\ignorespaces}
+  {\par\addvspace{\mm@stmtskip}}
+
+\NewDocumentEnvironment{mdefinition}{m m}
+  {\par\addvspace{\mm@stmtskip}\indent\mm@label{#1}{#2}\upshape\ignorespaces}
+  {\par\addvspace{\mm@stmtskip}}
+
+\NewDocumentEnvironment{mproof}{o}
+  {\par\addvspace{2pt}\indent
+   {\itshape\IfNoValueTF{#1}{Proof}{#1}.}\enspace\upshape\ignorespaces}
+  {\par\addvspace{\mm@stmtskip}}
+
+% ---------------------------------------------------------------- end-of-proof mark
+\newcommand\mm@qedsymbol{{\color{mmink}\rule{0.42em}{0.42em}}}
+\DeclareRobustCommand\qedmark{%
+  \ifmmode
+    \tag*{\mm@qedsymbol}%
+  \else
+    \begingroup
+      \leavevmode\unskip\nobreak\hfil\penalty50
+      \hskip1em\null\nobreak\hfil\mm@qedsymbol
+      \parfillskip=0pt \finalhyphendemerits=0 \par
+    \endgroup
+  \fi}
+
+% ---------------------------------------------------------------- figures
+\NewDocumentCommand\mfigure{+m m}{%
+  \par\addvspace{10pt plus 4pt minus 2pt}%
+  \begingroup\centering\noindent
+    #1\par
+    \ifblank{#2}{}{%
+      \nopagebreak\vspace{6pt}%
+      {\small\mm@capfont #2}\par}%
+  \endgroup
+  \addvspace{10pt plus 4pt minus 2pt}}
+
+\NewDocumentCommand\mfigurecap{+m m +m}{%
+  \par\addvspace{10pt plus 4pt minus 2pt}%
+  \begingroup\centering\noindent
+    #1\par\nopagebreak\vspace{6pt}%
+    {\small{\mm@capfont #2}\enspace #3}\par
+  \endgroup
+  \addvspace{10pt plus 4pt minus 2pt}}
+
+\tikzset{
+  mm main/.style    ={line width=0.8pt, draw=mmink, line cap=round, line join=round},
+  mm thin/.style    ={line width=0.5pt, draw=mmink, line cap=round, line join=round},
+  mm hatch/.style   ={line width=0.35pt, draw=mmink!70, line cap=round},
+  mm hidden/.style  ={line width=0.5pt, draw=mmink, dash pattern=on 2.5pt off 2pt,
+                      line cap=round},
+  mm arrow/.style   ={-{Stealth[length=5pt,width=3.6pt]}},
+  mm vec/.style     ={line width=0.7pt, draw=mmaccent, line cap=round,
+                      -{Stealth[length=5.5pt,width=4pt]}},
+  mm dot/.style     ={circle, fill=mmink, draw=none, inner sep=0pt, minimum size=3pt},
+  mm label/.style   ={font=\fontsize{9.5}{11.5}\selectfont\itshape, text=mmink,
+                      inner sep=2pt},
+  mm plane/.style   ={fill=mmink!7, draw=mmink, line width=0.5pt, line join=round},
+  mm surface/.style ={fill=mmink!4, draw=mmink, line width=0.8pt, line join=round},
+}
+
+% ---------------------------------------------------------------- notation
+% General: number systems, differential d, upright operator names.
+% BOOK-SPECIFIC EXAMPLES (from the Milnor-Stasheff project): \Proj \Tan \cohom \Gr \grp \Kgauss \Sym.
+% Replace them with this book's notation and list every macro in design/contract.md.
+\newcommand\R{\mathbb{R}}
+\newcommand\C{\mathbb{C}}
+\newcommand\Z{\mathbb{Z}}
+\newcommand\Q{\mathbb{Q}}
+\newcommand\Proj{\mathrm{P}}
+\newcommand\Tan{\mathrm{D}}
+% differential d:
+%   \dd  -> thin space after an ordinary/closing atom, none after ( or at start
+%   \dd* -> plain upright d with no space; use directly after "/" (dp/dt)
+\NewDocumentCommand\dd{s}{%
+  \IfBooleanTF{#1}{\mathrm{d}}{\mathop{}\!\mathrm{d}}}
+\newcommand\cohom{\mathrm{H}}
+\newcommand\Gr{\mathrm{G}}
+\newcommand\grp[1]{\mathrm{#1}}
+\newcommand\Kgauss{\mathcal{K}}
+\newcommand\Sym{\mathcal{S}}
+\newcommand\op[1]{\operatorname{#1}}
+
+% ---------------------------------------------------------------- citations, sections
+\DeclareRobustCommand\mcite[1]{\textup{[#1]}}
+
+\newcommand\msection[1]{%
+  \par\addvspace{14pt plus 4pt minus 2pt}%
+  {\centering\mm@capfont #1\par}%
+  \nobreak\vspace{8pt}%
+  \@afterindentfalse\@afterheading}
+
+\newcommand\mcont{\par\noindent\ignorespaces}
+\newcommand\mpar{\par}
+
+% ---------------------------------------------------------------- braced systems
+\NewDocumentEnvironment{mbracesys}{O{5pt}}
+  {\setlength\jot{#1}\[\left\{\begin{aligned}}
+  {\end{aligned}\right.\]\ignorespacesafterend}
+
+\NewDocumentEnvironment{mbracetable}{O{1.5} m}
+  {\[\renewcommand\arraystretch{#1}\left\{\begin{array}{#2}}
+  {\end{array}\right.\]\ignorespacesafterend}
+
+\endinput

@@ -1,0 +1,24 @@
+You see a hand-drawn figure from a scanned book. Image 1: the figure. Image 2: the same figure in
+light grey with numbered coloured boxes. Each box is ONE small ink component (one stroke piece).
+Some boxes are parts of hand-lettered labels (letters, digits, brackets, signs, sub- and
+superscripts); others are parts of the drawing (hatch ticks, dashes, arrowheads, dots, curve
+pieces) or scanner noise.
+
+{FIG_NOTES}
+
+Task: list the LABELS. For each label give ALL box ids that form it (usually one per letter,
+bracket, sign or sub/superscript) and its text as LaTeX. One box belongs to at most one label.
+A box that also contains part of the drawing (a dot or a line end touching a letter) is NOT part
+of the label: leave it out. Also give "element": the box id of the drawing element the label names
+(the dot, line, curve, arrow or region it is written next to), or null if unclear.
+- Mathematical labels in math mode with the notation of the book contract: number systems
+  blackboard bold (\R for a hand-written R of the real numbers), Greek as Greek, sub- and
+  superscripts exactly as drawn: "$E(\gamma_1^1)$", "$[0,\pi]\times\R$", "$S^2$", "$M_1$".
+- Plain words as text, math parts in $...$.
+- A dot that marks a point is NOT a label; an arrowhead is NOT a label.
+- Caption text inside the figure area (e.g. "Figure 7") is not a label: put its boxes in "erase".
+- Isolated scanner specks: "erase". When unsure, leave a box out (it stays part of the drawing).
+- Never invent a label that is not in the image.
+
+Reply with JSON only:
+{"labels": [{"clusters": [3, 4, 5], "tex": "$E(\\gamma_1^1)$", "element": 12}], "erase": []}

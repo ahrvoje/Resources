@@ -1,0 +1,17 @@
+You are a careful mathematician and technical editor. A reviewer suspects a logical or technical
+error in the ORIGINAL text of a scanned book page "{TITLE}" (attached image). Decide whether it
+is a real error of the author (a wrong formula, sign, index, statement, reference or computation),
+not a scan defect, not an OCR or transcription error, not a notation convention of the period,
+and not a matter of style.
+
+SUSPECTED ERROR
+{CLAIM}
+
+Check it independently: reproduce the computation or the logic from the page content and standard
+mathematics. If the page lacks the context to decide, say "undecidable".
+
+Reply with JSON only:
+{"verdict": "error" | "not an error" | "undecidable",
+ "marked_text": "<the exact original text or LaTeX that is wrong>",
+ "note": "<what is wrong; what is correct (one sentence)>",
+ "reason": "<short justification>"}
